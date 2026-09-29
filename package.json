@@ -1,0 +1,23 @@
+{
+  "name": "mmb",
+  "version": "1.0.0",
+  "description": "mmb - Awwwards Style Registration",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^18.0.4",
+    "express": "^5.2.1",
+    "gsap": "^3.12.5",
+    "mongoose": "^9.10.2",
+    "nodemailer": "^10.0.12",
+    "resend": "^6.30.0"
+  },
+  "devDependencies": {
+    "vite": "^5.0.0"
+  }
+}

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>mmb - Pair Smart Band</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="loaded pair-body">
+    
+    <!-- Real Webcam Feed -->
+    <video id="webcamFeed" class="camera-feed-video" autoplay playsinline muted></video>
+    
+    <!-- Vignette overlay to keep it futuristic -->
+    <div class="camera-overlay-dark"></div>
+
+    <!-- UI Overlay -->
+    <div class="scanner-ui">
+        
+        <header class="scanner-header">
+            <a href="dashboard.html" class="back-btn"><i class="ri-arrow-left-line"></i> Dashboard</a>
+            <img src="mmb logo.png" alt="mmb logo" class="logo small-logo">
+            <div class="status-badge"><i class="ri-radar-line"></i> Searching...</div>
+        </header>
+
+        <main class="scanner-main">
+            <div class="instruction-text">
+                <h2>Scan your smart band</h2>
+                <p>Align the QR code on your mmb wristband within the frame to pair automatically.</p>
+            </div>
+
+            <div class="scanner-box-wrapper">
+                <!-- Concentric radar rings -->
+                <div class="radar-ring ring-1"></div>
+                <div class="radar-ring ring-2"></div>
+
+                <!-- The Scanner Frame -->
+                <div class="scanner-frame">
+                    <div class="frame-corner top-left"></div>
+                    <div class="frame-corner top-right"></div>
+                    <div class="frame-corner bottom-left"></div>
+                    <div class="frame-corner bottom-right"></div>
+                    
+                    <!-- Laser Line -->
+                    <div class="scanner-laser"></div>
+                </div>
+                
+                <!-- Dummy QR code simulation -->
+                <div class="dummy-qr-overlay" id="qrOverlay">
+                    <i class="ri-qr-code-line"></i>
+                </div>
+            </div>
+            
+            <div class="tech-info">
+                <span>Signal: <strong id="sigStrength">--</strong> dBm</span>
+                <span class="divider-dot"></span>
+                <span>Target: <strong id="targetStatus">None</strong></span>
+            </div>
+        </main>
+        
+        <footer class="scanner-footer">
+            <button class="manual-btn"><i class="ri-keyboard-line"></i> Enter code manually</button>
+        </footer>
+
+        <!-- Success Pairing Overlay -->
+        <div id="pairSuccess" class="pair-success-overlay hidden">
+            <div class="success-content">
+                <div class="success-icon-large"><i class="ri-link"></i></div>
+                <h2>Band Paired!</h2>
+                <p>Your mmb smart band is now syncing with your medical profile.</p>
+                <div class="sync-loader">
+                    <div class="loader-spinner"></div>
+                    <span>Synchronizing vitals...</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Start Real Webcam Feed
+        async function startWebcam() {
+            const videoElement = document.getElementById('webcamFeed');
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { facingMode: 'environment' } // Prefer back camera on mobile
+                });
+                videoElement.srcObject = stream;
+            } catch (err) {
+                console.error("Camera access denied or not available.", err);
+                // Fallback style if camera is blocked
+                videoElement.style.background = "url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"100\" height=\"100\" opacity=\"0.05\"><rect width=\"100\" height=\"100\" fill=\"none\" stroke=\"%23ffffff\" stroke-width=\"1\"/></svg>') repeat";
+                videoElement.style.backgroundSize = "50px 50px";
+            }
+        }
+
+        // Simulate a pairing sequence for the hackathon prototype
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            startWebcam(); // Initialize the real camera
+
+            const sigStrength = document.getElementById('sigStrength');
+            const targetStatus = document.getElementById('targetStatus');
+            const qrOverlay = document.getElementById('qrOverlay');
+            const successOverlay = document.getElementById('pairSuccess');
+            
+            // Step 1: Fluctuate signal randomly to simulate searching
+            let searchInterval = setInterval(() => {
+                sigStrength.textContent = Math.floor(Math.random() * (90 - 60 + 1) + 60);
+            }, 300);
+
+            // Step 2: Simulate finding the QR code after 4 seconds (gives time for camera to load)
+            setTimeout(() => {
+                clearInterval(searchInterval);
+                sigStrength.textContent = "85";
+                targetStatus.textContent = "mmb-v2 Acquired";
+                targetStatus.style.color = "#4CAF50";
+                
+                // Show dummy QR fading in
+                qrOverlay.style.opacity = "1";
+                
+                // Add a scanning pulse effect
+                document.querySelector('.scanner-frame').classList.add('locked-on');
+                document.querySelector('.scanner-laser').classList.add('fast');
+
+                // Step 3: Show success screen after 1.5 more seconds
+                setTimeout(() => {
+                    successOverlay.classList.remove('hidden');
+                    
+                    // Stop camera tracks so recording light turns off
+                    const stream = document.getElementById('webcamFeed').srcObject;
+                    if (stream) {
+                        stream.getTracks().forEach(track => track.stop());
+                    }
+
+                    // Step 4: Redirect to dashboard after 3 seconds of "synchronizing"
+                    setTimeout(() => {
+                        window.location.href = 'dashboard.html';
+                    }, 3500);
+
+                }, 1500);
+            }, 4000);
+        });
+    </script>
+</body>
+</html>

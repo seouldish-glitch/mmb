@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>mmb - Medical ID</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <style>
+        /* Custom Modern Awwwards-Style UI - Light Theme */
+        :root {
+            --red: #FF3B30;
+            --red-glow: rgba(255, 59, 48, 0.4);
+            --teal: #007C78;
+            --bg: #F4F4F2;
+            --glass: rgba(255, 255, 255, 0.8);
+            --glass-border: rgba(0, 0, 0, 0.05);
+            --text-main: #1A1A1A;
+            --text-muted: #666666;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            background-color: var(--bg);
+            background-image: radial-gradient(circle at top right, rgba(0, 124, 120, 0.08), transparent 50%),
+                              radial-gradient(circle at bottom left, rgba(255, 59, 48, 0.08), transparent 50%);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        header {
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background: rgba(244, 244, 242, 0.7);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .logo { height: 55px; object-fit: contain; }
+
+        .critical-badge {
+            background: rgba(255, 59, 48, 0.1);
+            color: var(--red);
+            padding: 0.5rem 1.2rem;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: 1px solid rgba(255, 59, 48, 0.2);
+        }
+
+        .pulse-icon { animation: heartbeat 1.5s infinite; }
+        @keyframes heartbeat { 0%, 100% { transform: scale(1); } 15% { transform: scale(1.3); } 30% { transform: scale(1); } 45% { transform: scale(1.3); } }
+
+        /* Main Content Scrollable Area */
+        main {
+            flex: 1;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            padding-bottom: 220px; /* Space for fixed bottom */
+        }
+
+        /* Glass Profile Card */
+        .glass-card {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 5px;
+            background: linear-gradient(90deg, var(--teal), #00F0FF);
+        }
+
+        .profile-header { display: flex; align-items: center; gap: 1.5rem; margin-bottom: 1.5rem; }
+        .avatar { width: 70px; height: 70px; background: var(--teal); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 700; }
+        .name-block h1 { font-size: 2.2rem; font-weight: 600; letter-spacing: -1px; margin-bottom: 0.2rem; line-height: 1; color: var(--text-main); }
+        .name-block p { color: var(--text-muted); font-size: 1rem; }
+
+        .vitals-row {
+            display: flex;
+            background: rgba(0,0,0,0.03);
+            border-radius: 16px;
+            padding: 1rem;
+            justify-content: space-around;
+        }
+
+        .vital-mini { text-align: center; }
+        .vital-mini span { display: block; font-size: 0.75rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; margin-bottom: 0.3rem; letter-spacing: 1px; }
+        .vital-mini strong { font-size: 1.2rem; font-weight: 600; color: var(--text-main); }
+
+        /* Critical Info Grid */
+        .critical-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .info-card {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+
+        .info-card.span-2 { grid-column: span 2; }
+        .info-card .icon { font-size: 1.5rem; margin-bottom: 0.5rem; color: var(--teal); }
+        .info-card .label { font-size: 0.75rem; color: var(--text-muted); font-weight: 600; letter-spacing: 1px; }
+        .info-card .value { font-size: 1.2rem; font-weight: 600; line-height: 1.4; color: var(--text-main); }
+        .info-card .value.red-text { color: var(--red); font-size: 2rem; font-weight: 700; }
+
+        /* Fixed Action Bar */
+        .fixed-action-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 1.5rem 2rem 2rem 2rem;
+            background: linear-gradient(to top, rgba(244,244,242,1) 70%, transparent);
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            z-index: 100;
+        }
+
+        .btn-massive-sos {
+            background: var(--red);
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 1.5rem;
+            border-radius: 100px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            box-shadow: 0 10px 30px var(--red-glow);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+        }
+        
+        .btn-massive-sos::before {
+            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine { 20% { left: 100%; } 100% { left: 100%; } }
+
+        .btn-massive-sos:active { transform: scale(0.95); box-shadow: 0 5px 15px var(--red-glow); }
+        .btn-massive-sos i { font-size: 1.5rem; }
+
+        .call-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .btn-secondary {
+            background: var(--glass);
+            color: var(--text-main);
+            border: 1px solid var(--glass-border);
+            padding: 1.2rem;
+            border-radius: 100px;
+            text-align: center;
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            backdrop-filter: blur(10px);
+            transition: background 0.2s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .btn-secondary:active { background: rgba(0,0,0,0.05); }
+        .btn-secondary i { font-size: 1.2rem; }
+
+        /* Overlay */
+        .overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(244,244,242,0.95);
+            backdrop-filter: blur(20px);
+            z-index: 1000;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            text-align: center; padding: 2rem;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.5s ease;
+            color: var(--text-main);
+        }
+
+        .overlay.active { opacity: 1; pointer-events: all; }
+
+        .radar {
+            width: 100px; height: 100px;
+            border-radius: 50%;
+            border: 2px solid var(--teal);
+            position: relative;
+            margin-bottom: 2rem;
+        }
+        .radar::before {
+            content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 10px; height: 10px; background: var(--teal); border-radius: 50%;
+            box-shadow: 0 0 0 0 rgba(0, 124, 120, 0.5);
+            animation: ping 2s infinite;
+        }
+        @keyframes ping { 70% { box-shadow: 0 0 0 50px rgba(0, 124, 120, 0); } 100% { box-shadow: 0 0 0 0 rgba(0, 124, 120, 0); } }
+
+        .overlay h2 { font-size: 2.5rem; font-weight: 300; margin-bottom: 1rem; }
+        .overlay p { color: #888; font-size: 1.1rem; line-height: 1.6; margin-bottom: 3rem; }
+
+        .btn-okay {
+            background: var(--teal); color: #fff; padding: 1.2rem 4rem; border-radius: 100px; text-decoration: none; font-weight: 700; font-size: 1.1rem; display: none; box-shadow: 0 10px 20px rgba(0,124,120,0.3);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Emergency Loader -->
+    <div id="scanLoader" style="
+        position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+        background: linear-gradient(135deg, #1A1A1A 0%, #2D0A0A 100%);
+        z-index: 9999; display: flex; flex-direction: column;
+        align-items: center; justify-content: center; gap: 1.5rem;
+        transition: opacity 0.6s ease;
+    ">
+        <div style="
+            width: 80px; height: 80px; border-radius: 50%;
+            border: 3px solid rgba(255,59,48,0.3);
+            border-top-color: #FF3B30;
+            animation: loaderSpin 0.8s linear infinite;
+        "></div>
+        <p style="color: rgba(255,255,255,0.9); font-size: 1.1rem; font-weight: 600; letter-spacing: 2px;">ACCESSING MEDICAL ID</p>
+        <p style="color: rgba(255,255,255,0.4); font-size: 0.8rem;">Decrypting emergency profile...</p>
+    </div>
+    <style>
+        @keyframes loaderSpin { to { transform: rotate(360deg); } }
+    </style>
+    <header>
+        <img src="mmb logo.png" alt="mmb logo" class="logo">
+        <div class="critical-badge">
+            <i class="ri-heart-pulse-fill pulse-icon"></i> EMERGENCY ID
+        </div>
+    </header>
+
+    <main>
+        <!-- Identity Card -->
+        <div class="glass-card">
+            <div class="profile-header">
+                <div class="avatar" id="uiAvatar">JD</div>
+                <div class="name-block">
+                    <h1 id="uiName">Jane Doe</h1>
+                    <p id="uiAgeGender">Female &middot; 33 Years Old</p>
+                </div>
+            </div>
+            <div class="vitals-row">
+                <div class="vital-mini">
+                    <span>Height</span>
+                    <strong id="uiHeight">165 cm</strong>
+                </div>
+                <div class="vital-mini">
+                    <span>Weight</span>
+                    <strong id="uiWeight">62 kg</strong>
+                </div>
+                <div class="vital-mini">
+                    <span>Organ Donor</span>
+                    <strong>Yes</strong>
+                </div>
+            </div>
+        </div>
+
+        <!-- Critical Grid -->
+        <div class="critical-grid">
+            <div class="info-card">
+                <i class="ri-drop-fill icon" style="color: var(--red);"></i>
+                <span class="label">BLOOD TYPE</span>
+                <span class="value red-text" id="uiBloodType">A+</span>
+            </div>
+            <div class="info-card">
+                <i class="ri-error-warning-fill icon"></i>
+                <span class="label">ALLERGIES</span>
+                <span class="value" id="uiAllergies">Peanuts<br>Penicillin</span>
+            </div>
+            <div class="info-card span-2">
+                <i class="ri-capsule-fill icon"></i>
+                <span class="label">MEDICAL CONDITIONS</span>
+                <span class="value" id="uiConditions">Asthma (Mild) &middot; Requires Albuterol Inhaler. Appendectomy (2015).</span>
+            </div>
+
+            <!-- Emergency Contact Card -->
+            <div class="info-card span-2" style="background: linear-gradient(135deg, rgba(0,124,120,0.08), rgba(0,240,255,0.05)); border-color: rgba(0,124,120,0.2);">
+                <i class="ri-contacts-book-2-fill icon" style="color: var(--teal);"></i>
+                <span class="label">EMERGENCY CONTACT</span>
+                <div style="display: flex; align-items: center; gap: 1rem; margin-top: 0.5rem;">
+                    <div style="width: 45px; height: 45px; background: var(--teal); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1rem; flex-shrink: 0;" id="uiEmAvatar">--</div>
+                    <div>
+                        <span class="value" style="font-size: 1.1rem;" id="uiEmName">Loading...</span>
+                        <span class="label" style="letter-spacing: 0; text-transform: none; margin-top: 0.2rem; display: block;" id="uiEmDetails">Loading...</span>
+                    </div>
+                </div>
+                <a id="uiEmCallBtn" href="tel:" style="display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; margin-top: 0.8rem; padding: 0.7rem 1.5rem; background: var(--teal); color: white; border-radius: 50px; text-decoration: none; font-weight: 600; font-size: 0.9rem; box-shadow: 0 5px 15px rgba(0,124,120,0.3);">
+                    <i class="ri-phone-fill"></i> Call Contact
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Fixed Action Bar -->
+    <div class="fixed-action-bar">
+        <button class="btn-massive-sos" id="sosTrigger">
+            <i class="ri-alarm-warning-fill pulse-icon"></i> REPORT ACCIDENT
+        </button>
+        <div class="call-actions" style="grid-template-columns: 1fr 1fr 1fr;">
+            <a href="tel:112" class="btn-secondary" style="color: var(--red); border-color: rgba(255, 59, 48, 0.3);">
+                <i class="ri-phone-fill"></i> Call 112
+            </a>
+            <a href="tel:" id="uiCallContactBtn" class="btn-secondary">
+                <i class="ri-user-heart-line"></i> Call Contact
+            </a>
+            <a href="#" id="navigateBtn" class="btn-secondary" style="color: var(--teal); border-color: rgba(0,124,120,0.3);">
+                <i class="ri-navigation-fill"></i> Navigate
+            </a>
+        </div>
+    </div>
+
+    <!-- Dispatch Overlay -->
+    <div class="overlay" id="overlay">
+        <div class="radar" id="radarIcon"></div>
+        <i class="ri-checkbox-circle-fill" id="successIcon" style="font-size: 6rem; color: #4CAF50; margin-bottom: 2rem; display: none;"></i>
+        
+        <h2 id="overlayTitle">Acquiring GPS...</h2>
+        <p id="overlayText">Locking onto satellite coordinates to dispatch emergency services to this exact location.</p>
+        
+        <a href="#" class="btn-okay" id="btnOkay">Okay</a>
+    </div>
+
+    <script>
+        const sosTrigger = document.getElementById('sosTrigger');
+        const overlay = document.getElementById('overlay');
+        const radar = document.getElementById('radarIcon');
+        const success = document.getElementById('successIcon');
+        const title = document.getElementById('overlayTitle');
+        const text = document.getElementById('overlayText');
+        const btnOkay = document.getElementById('btnOkay');
+        const navigateBtn = document.getElementById('navigateBtn');
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const userId = urlParams.get('id');
+
+        // Real GPS Location
+        let userLat = 6.9147;  // Default: SLIIT Malabe
+        let userLng = 79.9733;
+        let locationAcquired = false;
+
+        // Auto-acquire real location on page load
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (pos) => {
+                    userLat = pos.coords.latitude;
+                    userLng = pos.coords.longitude;
+                    locationAcquired = true;
+                    console.log("GPS Acquired:", userLat, userLng);
+                },
+                (err) => {
+                    console.warn("GPS unavailable, using default SLIIT location");
+                },
+                { enableHighAccuracy: true, timeout: 10000 }
+            );
+        }
+
+        // Navigate button — opens Google Maps with real location
+        navigateBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${userLat},${userLng}`;
+            window.open(mapsUrl, '_blank');
+        });
+
+        window.addEventListener('DOMContentLoaded', async () => {
+            const dismissLoader = () => {
+                const loader = document.getElementById('scanLoader');
+                if (loader) {
+                    loader.style.opacity = '0';
+                    setTimeout(() => loader.style.display = 'none', 600);
+                }
+            };
+
+            if (userId) {
+                try {
+                    const host = window.location.hostname || 'localhost';
+                    const backendUrl = 'http://' + host + ':3000';
+                    const response = await fetch(backendUrl + '/api/user/' + userId);
+                    const result = await response.json();
+                    if(result.success && result.data) {
+                        const user = result.data;
+                        loadedUser = user; // Store for toast notification
+                        document.getElementById('uiName').innerText = user.fullName || 'Unknown';
+                        document.getElementById('uiAvatar').innerText = user.fullName ? user.fullName.substring(0,2).toUpperCase() : '??';
+                        
+                        let ageStr = 'Unknown Age';
+                        if(user.dob) {
+                            const dob = new Date(user.dob);
+                            const ageDifMs = Date.now() - dob.getTime();
+                            const ageDate = new Date(ageDifMs);
+                            ageStr = Math.abs(ageDate.getUTCFullYear() - 1970) + ' Years Old';
+                        }
+                        document.getElementById('uiAgeGender').innerHTML = `${ageStr}`;
+                        
+                        if(user.height) document.getElementById('uiHeight').innerText = user.height;
+                        if(user.weight) document.getElementById('uiWeight').innerText = user.weight;
+                        if(user.bloodType) document.getElementById('uiBloodType').innerText = user.bloodType;
+                        if(user.allergies) document.getElementById('uiAllergies').innerText = user.allergies;
+                        if(user.conditions) document.getElementById('uiConditions').innerText = user.conditions;
+
+                        // Emergency Contact
+                        if(user.emName) {
+                            document.getElementById('uiEmAvatar').innerText = user.emName.substring(0,2).toUpperCase();
+                            document.getElementById('uiEmName').innerText = user.emName;
+                            document.getElementById('uiEmDetails').innerText = (user.emRelation || '') + ' · ' + (user.emPhone || 'No phone');
+                            if(user.emPhone) {
+                                document.getElementById('uiEmCallBtn').href = 'tel:' + user.emPhone;
+                                document.getElementById('uiCallContactBtn').href = 'tel:' + user.emPhone;
+                            }
+                        }
+                    }
+                } catch(e) {
+                    console.error("Failed to load user data from Mongo", e);
+                }
+            }
+
+            // Dismiss loader after data is ready
+            setTimeout(dismissLoader, 1800);
+        });
+
+        sosTrigger.addEventListener('click', () => {
+            overlay.classList.add('active');
+            
+            setTimeout(() => {
+                title.innerText = "Transmitting Data";
+                text.innerText = "Sending Medical Profile and live location to mmb Dispatch Network...";
+                
+                setTimeout(() => {
+                    radar.style.display = 'none';
+                    success.style.display = 'block';
+                    title.innerText = "Ambulance Dispatched";
+                    title.style.color = "#4CAF50";
+                    text.innerHTML = "Help is on the way.<br><br>Family has been notified via automated SMS and call.";
+                    btnOkay.style.display = 'inline-block';
+                }, 2500);
+
+            }, 2000);
+        });
+
+        // Close overlay when Okay is clicked
+        btnOkay.addEventListener('click', (e) => {
+            e.preventDefault();
+            overlay.classList.remove('active');
+            // Reset overlay state for next use
+            setTimeout(() => {
+                radar.style.display = '';
+                success.style.display = 'none';
+                title.innerText = 'Acquiring GPS...';
+                title.style.color = '';
+                text.innerText = 'Locking onto satellite coordinates to dispatch emergency services to this exact location.';
+                btnOkay.style.display = 'none';
+            }, 500);
+        });
+
+        // Send alert to dashboard + show dynamic toast on page load
+        let loadedUser = null; // Store fetched user data globally
+
+        // Override the data fetch to store user data
+        const origFetch = window._userDataLoaded;
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const userName = loadedUser ? loadedUser.fullName : 'Patient';
+                const emName = loadedUser ? (loadedUser.emName || 'Emergency Contact') : 'Emergency Contact';
+
+                const toast = document.createElement('div');
+                toast.style.cssText = "position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.85); color: white; padding: 1rem 1.5rem; border-radius: 12px; font-size: 0.95rem; display: flex; align-items: center; gap: 1rem; box-shadow: 0 15px 35px rgba(0,0,0,0.2); z-index: 2000; opacity: 0; transition: opacity 0.5s ease, transform 0.5s ease; width: 90%; max-width: 450px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1);";
+                
+                toast.innerHTML = `
+                    <i class="ri-map-pin-user-fill pulse-icon" style="color: var(--teal); font-size: 1.5rem; flex-shrink: 0;"></i>
+                    <div style="display: flex; flex-direction: column; gap: 0.2rem;">
+                        <strong style="font-weight: 600; letter-spacing: 0.5px; color: var(--teal);">Location Secured</strong>
+                        <span style="color: rgba(255,255,255,0.9); font-size: 0.85rem; line-height: 1.4;">Scanner location (${userLat.toFixed(4)}° N, ${userLng.toFixed(4)}° E) has been transmitted to ${userName}'s emergency contact (${emName}).</span>
+                    </div>
+                `;
+                
+                document.body.appendChild(toast);
+                
+                setTimeout(() => { 
+                    toast.style.opacity = '1';
+                    toast.style.transform = 'translateX(-50%) translateY(10px)';
+                }, 100);
+                
+                setTimeout(() => { 
+                    toast.style.opacity = '0'; 
+                    toast.style.transform = 'translateX(-50%) translateY(-10px)';
+                    setTimeout(() => toast.remove(), 500); 
+                }, 6000);
+            }, 2000);
+        });
+
+        // When SOS/Report Accident is clicked, also alert the dashboard in real-time
+        sosTrigger.addEventListener('click', () => {
+            const host = window.location.hostname || 'localhost';
+            const backendUrl = 'http://' + host + ':3000';
+            fetch(backendUrl + '/api/send-alert', { 
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId: userId })
+            })
+            .then(r => r.json())
+            .then(data => console.log("Dashboard alerted:", data))
+            .catch(err => console.error("Alert error:", err));
+        });
+    </script>
+</body>
+</html>

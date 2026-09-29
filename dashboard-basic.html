@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>mmb - Basic Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="loaded">
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <img src="mmb logo.png" alt="mmb logo" class="logo small-logo">
+            </div>
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="nav-item active"><i class="ri-dashboard-line"></i> Overview</a>
+                <a href="profile.html" class="nav-item"><i class="ri-file-user-line"></i> Medical Profile</a>
+                <a href="sos.html" class="nav-item" style="color: #F44336;"><i class="ri-alarm-warning-fill"></i> SOS Hub</a>
+                <a href="device.html" class="nav-item"><i class="ri-device-line"></i> Band Settings</a>
+                <a href="plans.html" class="nav-item"><i class="ri-bank-card-line"></i> Plans & Billing</a>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="#" class="nav-item"><i class="ri-settings-4-line"></i> Settings</a>
+                <a href="index.html" class="nav-item"><i class="ri-logout-box-r-line"></i> Logout</a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="dashboard-main">
+            <header class="dashboard-header">
+                <div class="header-greeting">
+                    <h1>Welcome back, Jane.</h1>
+                    <p>Your medical profile is 100% complete and fully encrypted.</p>
+                </div>
+                <div class="header-actions">
+                    <a href="pair.html" class="nav-btn submit-btn show" style="padding: 0.8rem 1.5rem; transform: none;">
+                        <i class="ri-qr-scan-2-line"></i> Pair Smart Band
+                    </a>
+                    <button class="icon-btn"><i class="ri-notification-3-line"></i></button>
+                    <div class="user-avatar">JD</div>
+                </div>
+            </header>
+
+            <div class="dashboard-grid expanded-grid">
+                
+                <!-- Live Vitals Widget -->
+                <div class="widget vitals-widget span-2">
+                    <div class="widget-header">
+                        <h3>Live Telemetry</h3>
+                        <div class="live-indicator"><span class="pulse-dot"></span> Live Sync</div>
+                    </div>
+                    <div class="vitals-container">
+                        <div class="vital-box">
+                            <div class="vital-icon pulse-anim"><i class="ri-heart-pulse-fill"></i></div>
+                            <div class="vital-value"><span id="bpmVal">74</span><small>bpm</small></div>
+                            <div class="vital-label">Heart Rate</div>
+                        </div>
+                        <div class="vital-box">
+                            <div class="vital-icon text-blue"><i class="ri-drop-fill"></i></div>
+                            <div class="vital-value"><span id="spo2Val">98</span><small>%</small></div>
+                            <div class="vital-label">Blood Oxygen</div>
+                        </div>
+                        <div class="vital-box">
+                            <div class="vital-icon text-orange"><i class="ri-temp-hot-line"></i></div>
+                            <div class="vital-value"><span id="tempVal">98.6</span><small>°F</small></div>
+                            <div class="vital-label">Body Temp</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Band Status -->
+                <div class="widget band-widget">
+                    <div class="widget-header">
+                        <h3>Device Status</h3>
+                        <i class="ri-battery-charge-line text-green"></i>
+                    </div>
+                    <div class="band-status">
+                        <img src="mmb basic band.jpeg" alt="MMB Basic Band" class="device-render">
+                        <div class="band-details">
+                            <strong>mmb-v1 Active</strong>
+                            <p class="text-green">Connected &middot; 84%</p>
+                        </div>
+                    </div>
+                    <button class="btn-outline mt-2 w-100" id="pingBandBtn" style="display: flex; justify-content: center; align-items: center; gap: 0.5rem; border-color: var(--color-primary); color: var(--color-primary);">
+                        <i class="ri-volume-up-line"></i> Find My Band
+                    </button>
+                </div>
+
+                <!-- Activity Analytics Widget -->
+                <div class="widget analytics-widget span-2">
+                    <div class="widget-header">
+                        <h3>Heart Rate Analytics</h3>
+                        <div class="log-actions">
+                            <span class="log-filter">This Week</span>
+                            <i class="ri-bar-chart-2-line"></i>
+                        </div>
+                    </div>
+                    <div class="analytics-chart" id="analyticsChart">
+                        <!-- Bars generated by JS -->
+                    </div>
+                </div>
+
+                <!-- Profile Status -->
+                <div class="widget profile-widget">
+                    <div class="widget-header">
+                        <h3>Profile Integrity</h3>
+                        <i class="ri-shield-check-fill status-icon"></i>
+                    </div>
+                    <div class="widget-body">
+                        <div class="status-bar">
+                            <div class="status-fill" style="width: 100%;"></div>
+                        </div>
+                        <p class="status-text">All emergency and medical data is up to date.</p>
+                        <button class="btn-outline mt-2 w-100">Update Medical Profile</button>
+                    </div>
+                </div>
+
+                <!-- Live Location Tracking Widget -->
+                <div class="widget location-widget span-2">
+                    <div class="widget-header">
+                        <h3>GPS Location Tracking</h3>
+                        <div class="live-indicator"><span class="pulse-dot"></span> Signal Locked</div>
+                    </div>
+                    <div class="location-map-container">
+                        <!-- Locked GPS Widget -->
+                        <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(5px);">
+                            <i class="ri-lock-fill" style="font-size: 3rem; color: #666; margin-bottom: 1rem;"></i>
+                            <h3 style="color: #fff; margin-bottom: 0.5rem;">GPS Tracking Locked</h3>
+                            <p style="color: #999; text-align: center; max-width: 80%;">Upgrade to Premium to enable live satellite tracking and emergency beacon protocols.</p>
+                            <button class="btn-outline mt-2" style="border-color: var(--color-primary); color: var(--color-primary);">Upgrade Now</button>
+                        </div>
+                        <iframe class="google-map-iframe" src="https://maps.google.com/maps?q=SLIIT%20Malabe&t=&z=16&ie=UTF8&iwloc=&output=embed" allowfullscreen="" loading="lazy" style="filter: grayscale(100%) opacity(0.2);"></iframe>
+
+                        <!-- Floating HUD -->
+                        <div class="location-hud">
+                            <div class="coord-box">
+                                <span class="coord-label">LATITUDE</span>
+                                <span class="coord-val" id="latVal">6.9147</span>&deg; N
+                            </div>
+                            <div class="coord-box">
+                                <span class="coord-label">LONGITUDE</span>
+                                <span class="coord-val" id="lngVal">79.9733</span>&deg; E
+                            </div>
+                            <div class="coord-box">
+                                <span class="coord-label">ALTITUDE</span>
+                                <span>25m</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Subscription Plan Widget -->
+                <div class="widget plan-widget">
+                    <div class="widget-header">
+                        <h3>Active Subscription</h3>
+                        <i class="ri-vip-crown-fill text-orange"></i>
+                    </div>
+                    <div class="plan-details">
+                        <div class="plan-badge" style="background: #333;">mmb Basic Tier</div>
+                        <ul class="plan-features">
+                            <li><i class="ri-check-line text-green"></i> QR Code Medical Profile</li>
+                            <li style="color: #666;"><i class="ri-lock-line"></i> 24/7 Emergency Dispatch</li>
+                            <li style="color: #666;"><i class="ri-lock-line"></i> Global GPS Tracking</li>
+                            <li style="color: #666;"><i class="ri-lock-line"></i> Auto-SOS Fall Detection</li>
+                        </ul>
+                        <button class="btn-outline mt-2 w-100" style="background: var(--color-primary); color: white; border: none;">Upgrade to Premium</button>
+                    </div>
+                </div>
+
+                <!-- Recent Event Logs (Old Logs) -->
+                <div class="widget history-widget span-3">
+                    <div class="widget-header">
+                        <h3>System Event History</h3>
+                        <div class="log-actions">
+                            <span class="log-filter">Last 90 Days</span>
+                            <i class="ri-history-line"></i>
+                        </div>
+                    </div>
+                    <div class="timeline-feed">
+                        
+                        <div class="timeline-item warning">
+                            <div class="timeline-marker"><i class="ri-alarm-warning-fill pulse-anim"></i></div>
+                            <div class="timeline-content">
+                                <div class="timeline-header">
+                                    <h4>SYS_FALL_DETECT_TRIGGER</h4>
+                                    <span class="timeline-badge text-orange">OVERRIDDEN</span>
+                                </div>
+                                <p class="sys-msg">Impact force: 4.2G detected. User manually aborted auto-SOS sequence.</p>
+                                <div class="timeline-meta">
+                                    <span><i class="ri-time-line"></i> Oct 12, 14:30:05</span>
+                                    <span><i class="ri-fingerprint-line"></i> UUID: f89a-2b1c</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item success">
+                            <div class="timeline-marker"><i class="ri-qr-code-line"></i></div>
+                            <div class="timeline-content">
+                                <div class="timeline-header">
+                                    <h4>HARDWARE_AUTH_SUCCESS</h4>
+                                    <span class="timeline-badge text-green">VERIFIED</span>
+                                </div>
+                                <p class="sys-msg">mmb-v2 Pro [MAC: 00:1B:44:11:3A:B7] paired via secure QR scan.</p>
+                                <div class="timeline-meta">
+                                    <span><i class="ri-time-line"></i> Sep 28, 09:15:22</span>
+                                    <span><i class="ri-fingerprint-line"></i> UUID: e42c-9a01</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item critical">
+                            <div class="timeline-marker"><i class="ri-hospital-fill"></i></div>
+                            <div class="timeline-content">
+                                <div class="timeline-header">
+                                    <h4>MANUAL_SOS_DISPATCH</h4>
+                                    <span class="timeline-badge text-red">CRITICAL</span>
+                                </div>
+                                <p class="sys-msg">Override initiated. EMT dispatched to: 6.9147&deg; N, 79.9733&deg; E (SLIIT Malabe).</p>
+                                <div class="timeline-meta">
+                                    <span><i class="ri-time-line"></i> Aug 14, 18:45:11</span>
+                                    <span><i class="ri-fingerprint-line"></i> UUID: a19f-7c44</span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Live Vitals Simulation
+            const bpmVal = document.getElementById('bpmVal');
+            const spo2Val = document.getElementById('spo2Val');
+            
+            setInterval(() => {
+                let currentBpm = parseInt(bpmVal.innerText);
+                let newBpm = currentBpm + (Math.random() > 0.5 ? 1 : -1) * Math.floor(Math.random() * 3);
+                if (newBpm > 85) newBpm = 82;
+                if (newBpm < 65) newBpm = 68;
+                bpmVal.innerText = newBpm;
+
+                if (Math.random() > 0.8) {
+                    spo2Val.innerText = Math.random() > 0.5 ? 99 : 98;
+                }
+            }, 2000);
+
+            // Live GPS Tracking Simulation
+            const latVal = document.getElementById('latVal');
+            const lngVal = document.getElementById('lngVal');
+            
+            setInterval(() => {
+                let lat = parseFloat(latVal.innerText);
+                let lng = parseFloat(lngVal.innerText);
+                
+                // Simulate slow walking pace movement
+                lat += (Math.random() - 0.5) * 0.0001;
+                lng += (Math.random() - 0.5) * 0.0001;
+                
+                latVal.innerText = lat.toFixed(4);
+                lngVal.innerText = lng.toFixed(4);
+            }, 3000);
+
+            // Populate Analytics Chart
+            const chart = document.getElementById('analyticsChart');
+            const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+            const data = [65, 80, 45, 90, 75, 55, 85]; // Percentages
+
+            days.forEach((day, index) => {
+                const col = document.createElement('div');
+                col.className = 'chart-col';
+                
+                const barWrapper = document.createElement('div');
+                barWrapper.className = 'bar-wrapper';
+                
+                const barFill = document.createElement('div');
+                barFill.className = 'bar-fill';
+                barFill.style.height = '0%'; // Start at 0 for animation
+                
+                const label = document.createElement('div');
+                label.className = 'bar-label';
+                label.innerText = day;
+
+                barWrapper.appendChild(barFill);
+                col.appendChild(barWrapper);
+                col.appendChild(label);
+                chart.appendChild(col);
+
+                // Animate bars on load
+                setTimeout(() => {
+                    barFill.style.height = data[index] + '%';
+                }, 300 + (index * 100)); // Staggered animation
+            });
+
+            // Ping Band Logic
+            const pingBtn = document.getElementById('pingBandBtn');
+            if (pingBtn) {
+                pingBtn.addEventListener('click', () => {
+                    const originalHTML = pingBtn.innerHTML;
+                    pingBtn.innerHTML = '<i class="ri-volume-up-fill pulse-anim"></i> Playing Sound...';
+                    pingBtn.style.background = 'rgba(0, 124, 120, 0.1)';
+                    
+                    setTimeout(() => {
+                        pingBtn.innerHTML = '<i class="ri-check-line"></i> Found';
+                        pingBtn.style.background = 'rgba(76, 175, 80, 0.1)';
+                        pingBtn.style.borderColor = '#4CAF50';
+                        pingBtn.style.color = '#4CAF50';
+
+                        setTimeout(() => {
+                            pingBtn.innerHTML = originalHTML;
+                            pingBtn.style.background = 'transparent';
+                            pingBtn.style.borderColor = 'var(--color-primary)';
+                            pingBtn.style.color = 'var(--color-primary)';
+                        }, 2000);
+                    }, 4000);
+                });
+            }
+
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>mmb - Awwwards Style Registration</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Static Loader -->
+    <div id="staticLoader" class="static-loader">
+        <div class="loader-content">
+            <div class="loader-counter" id="loaderCounter">0%</div>
+        </div>
+        <script>
+            (function(){
+                let c = document.getElementById('loaderCounter');
+                let count = 0;
+                let intv = setInterval(() => {
+                    count += Math.floor(Math.random() * 15) + 5;
+                    if(count >= 100) { count = 100; clearInterval(intv); }
+                    c.innerText = count + '%';
+                }, 100);
+            })();
+        </script>
+    </div>
+
+    <main class="app-container">
+        <!-- Left Panel: Branding & Progress -->
+        <aside class="branding-panel">
+            <div class="brand-top">
+                <img src="mmb logo.png" alt="mmb logo" class="logo">
+            </div>
+            
+            <div class="progress-container">
+                <div class="step-indicator">
+                    <span class="current-step-num">01</span>
+                    <span class="divider">/</span>
+                    <span class="total-step-num">04</span>
+                </div>
+                <h2 class="step-title" id="stepTitleDisplay">Personal Identity</h2>
+                
+                <div class="progress-bar-wrapper">
+                    <div class="progress-bar" id="progressBar"></div>
+                </div>
+            </div>
+            
+            <div class="abstract-shape"></div>
+        </aside>
+
+        <!-- Right Panel: Form Area -->
+        <section class="form-panel">
+            <!-- Interstitial Step Loader -->
+            <div id="stepLoader" class="step-loader hidden">
+                <div class="loader-spinner dark"></div>
+                <p class="loader-text">Encrypting data...</p>
+            </div>
+
+            <form id="registrationForm" novalidate>
+                
+                <div class="steps-wrapper" id="stepsWrapper">
+                    
+                    <!-- STEP 1: Personal Information -->
+                    <div class="form-step active" data-step="1" data-title="Personal Identity">
+                        <div class="step-header">
+                            <h3>Let's start with the basics.</h3>
+                            <p>Please provide your personal details to create your medical profile.</p>
+                        </div>
+                        
+                        <div class="form-group">
+                            <input type="text" id="fullName" name="fullName" required placeholder=" ">
+                            <label for="fullName">Full Name</label>
+                            <span class="error-msg">Name is required</span>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group half">
+                                <input type="date" id="dob" name="dob" required placeholder=" ">
+                                <label for="dob" class="active-label">Date of Birth</label>
+                                <span class="error-msg">Required</span>
+                            </div>
+                            <div class="form-group half">
+                                <input type="text" id="nationalId" name="nationalId" required placeholder=" ">
+                                <label for="nationalId">National ID</label>
+                                <span class="error-msg">Required</span>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group half">
+                                <input type="tel" id="phone" name="phone" required placeholder=" ">
+                                <label for="phone">Phone Number</label>
+                                <span class="error-msg">Required</span>
+                            </div>
+                            <div class="form-group half">
+                                <input type="email" id="email" name="email" required placeholder=" ">
+                                <label for="email">Email Address</label>
+                                <span class="error-msg">Valid email required</span>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group half">
+                                <input type="password" id="password" name="password" required placeholder=" ">
+                                <label for="password">Password</label>
+                            </div>
+                            <div class="form-group half">
+                                <input type="password" id="confirmPassword" name="confirmPassword" required placeholder=" ">
+                                <label for="confirmPassword">Confirm Password</label>
+                            </div>
+                        </div>
+
+                        <p style="margin-top: 2rem; font-size: 0.9rem; text-align: center;">
+                            Already have an account? <a href="login.html" style="color: var(--color-primary); font-weight: 600; text-decoration: none;">Login here</a>
+                        </p>
+                    </div>
+
+                    <!-- STEP 2: Emergency Contact -->
+                    <div class="form-step" data-step="2" data-title="Emergency Contacts">
+                        <div class="step-header">
+                            <h3>Who should we call?</h3>
+                            <p>In case of an emergency, we need a primary point of contact.</p>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group half">
+                                <input type="text" id="emName" name="emName" required placeholder=" ">
+                                <label for="emName">Contact Name</label>
+                            </div>
+                            <div class="form-group half">
+                                <input type="text" id="emRelation" name="emRelation" required placeholder=" ">
+                                <label for="emRelation">Relationship</label>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group half">
+                                <input type="tel" id="emPhone" name="emPhone" required placeholder=" ">
+                                <label for="emPhone">Phone Number</label>
+                            </div>
+                            <div class="form-group half">
+                                <input type="tel" id="emWorkPhone" name="emWorkPhone" placeholder=" ">
+                                <label for="emWorkPhone">Work Phone (Optional)</label>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group half">
+                                <input type="email" id="emEmail" name="emEmail" required placeholder=" ">
+                                <label for="emEmail">Email Address</label>
+                            </div>
+                            <div class="form-group half">
+                                <input type="date" id="emDob" name="emDob" required placeholder=" ">
+                                <label for="emDob" class="active-label">Date of Birth</label>
+                            </div>
+                        </div>
+                        
+                        <button type="button" class="btn-text-only" id="toggleContact2">
+                            <i class="ri-add-line"></i> Add secondary contact
+                        </button>
+
+                        <!-- Optional 2nd Contact -->
+                        <div class="optional-section hidden" id="contact2Section">
+                            <h4 class="mini-title">Secondary Contact</h4>
+                            <div class="form-row">
+                                <div class="form-group half">
+                                    <input type="text" id="em2Name" placeholder=" ">
+                                    <label for="em2Name">Contact Name</label>
+                                </div>
+                                <div class="form-group half">
+                                    <input type="text" id="em2Relation" placeholder=" ">
+                                    <label for="em2Relation">Relationship</label>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group half">
+                                    <input type="tel" id="em2Phone" placeholder=" ">
+                                    <label for="em2Phone">Phone</label>
+                                </div>
+                                <div class="form-group half">
+                                    <input type="email" id="em2Email" placeholder=" ">
+                                    <label for="em2Email">Email</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- STEP 3: Medical History -->
+                    <div class="form-step" data-step="3" data-title="Medical History">
+                        <div class="step-header">
+                            <h3>Your health matters.</h3>
+                            <p>Provide key medical context so we can serve you better.</p>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group select-wrapper half">
+                                <select id="bloodType" name="bloodType" required>
+                                    <option value="" disabled selected></option>
+                                    <option value="A+">A+</option>
+                                    <option value="A-">A-</option>
+                                    <option value="B+">B+</option>
+                                    <option value="B-">B-</option>
+                                    <option value="AB+">AB+</option>
+                                    <option value="AB-">AB-</option>
+                                    <option value="O+">O+</option>
+                                    <option value="O-">O-</option>
+                                    <option value="Unknown">I don't know</option>
+                                </select>
+                                <label for="bloodType" class="active-label">Blood Type</label>
+                                <i class="ri-arrow-down-s-line select-icon"></i>
+                            </div>
+                            <div class="form-group select-wrapper half">
+                                <select id="smoking" name="smoking" required>
+                                    <option value="" disabled selected></option>
+                                    <option value="No">No</option>
+                                    <option value="Yes">Yes</option>
+                                    <option value="Former">Former Smoker</option>
+                                </select>
+                                <label for="smoking" class="active-label">Do you smoke?</label>
+                                <i class="ri-arrow-down-s-line select-icon"></i>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <textarea id="medications" name="medications" rows="1" placeholder=" "></textarea>
+                            <label for="medications">Current Medications (Optional)</label>
+                        </div>
+
+                        <div class="form-group">
+                            <textarea id="allergies" name="allergies" rows="1" placeholder=" "></textarea>
+                            <label for="allergies">Known Allergies (Optional)</label>
+                        </div>
+
+                        <div class="form-group">
+                            <textarea id="conditions" name="conditions" rows="1" placeholder=" "></textarea>
+                            <label for="conditions">Chronic Conditions / Past Surgeries</label>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group half">
+                                <input type="text" id="familyDocName" name="familyDocName" placeholder=" ">
+                                <label for="familyDocName">Family Doctor Name (Opt)</label>
+                            </div>
+                            <div class="form-group half">
+                                <input type="tel" id="familyDocPhone" name="familyDocPhone" placeholder=" ">
+                                <label for="familyDocPhone">Doctor's Phone (Opt)</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- STEP 4: Insurance Details -->
+                    <div class="form-step" data-step="4" data-title="Insurance & Coverage">
+                        <div class="step-header">
+                            <h3>Final details.</h3>
+                            <p>Ensure your coverage and emergency services are mapped.</p>
+                        </div>
+
+                        <div class="form-group">
+                            <input type="text" id="insuranceProvider" name="insuranceProvider" required placeholder=" ">
+                            <label for="insuranceProvider">Insurance Provider</label>
+                        </div>
+
+                        <div class="form-group">
+                            <input type="text" id="policyNumber" name="policyNumber" required placeholder=" ">
+                            <label for="policyNumber">Policy / Member ID</label>
+                        </div>
+
+                        <div class="checkbox-container mt-4">
+                            <label class="custom-checkbox-wrapper">
+                                <input type="checkbox" id="ambulanceService" name="ambulanceService">
+                                <span class="checkmark"></span>
+                                <span class="checkbox-text">I am registered with an emergency ambulance service.</span>
+                            </label>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Navigation Controls -->
+                <div class="form-navigation">
+                    <button type="button" class="nav-btn prev-btn" id="prevBtn">
+                        <i class="ri-arrow-left-line"></i> Back
+                    </button>
+                    <button type="button" class="nav-btn next-btn" id="nextBtn">
+                        Next Step <i class="ri-arrow-right-line"></i>
+                    </button>
+                    <button type="submit" class="nav-btn submit-btn" id="submitBtn">
+                        Complete Registration <i class="ri-check-line"></i>
+                    </button>
+                </div>
+
+            </form>
+            
+            <!-- Success Message (Hidden) -->
+            <div class="success-message" id="successMessage">
+                <div class="success-icon"><i class="ri-shield-check-fill"></i></div>
+                <h2>You're all set.</h2>
+                <p>Your medical profile has been successfully encrypted and saved to mmb.</p>
+            </div>
+            
+        </section>
+    </main>
+    
+    <!-- Fake Authentication Modal -->
+    <style>
+        .auth-modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(244, 244, 242, 0.9);
+            backdrop-filter: blur(15px);
+            z-index: 1000;
+            display: flex; justify-content: center; align-items: center;
+            opacity: 0; visibility: hidden; transition: all 0.4s ease;
+        }
+        body.dark-theme .auth-modal-overlay { background: rgba(18, 18, 18, 0.9); }
+        .auth-modal-overlay.active { opacity: 1; visibility: visible; }
+        .auth-modal {
+            background: #fff; padding: 3rem 2rem; border-radius: 24px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+            text-align: center; max-width: 400px; width: 90%;
+            transform: translateY(20px); transition: transform 0.4s ease;
+            border: 1px solid var(--color-border);
+        }
+        body.dark-theme .auth-modal { background: var(--color-bg-dark); }
+        .auth-modal-overlay.active .auth-modal { transform: translateY(0); }
+        .auth-icon { font-size: 4rem; color: var(--color-primary); margin-bottom: 1rem; display: inline-block; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 124, 120, 0.4); border-radius: 50%; } 70% { transform: scale(1.1); box-shadow: 0 0 0 15px rgba(0, 124, 120, 0); border-radius: 50%; } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 124, 120, 0); border-radius: 50%; } }
+        .auth-modal h2 { margin-bottom: 0.5rem; font-weight: 500; font-size: 1.8rem; }
+        .auth-modal p { color: var(--color-text-muted); font-size: 0.95rem; margin-bottom: 2rem; line-height: 1.5; }
+        .otp-inputs { display: flex; gap: 0.5rem; justify-content: center; margin-bottom: 2rem; }
+        .otp-digit { width: 45px; height: 55px; border: 2px solid var(--color-border); border-radius: 12px; font-size: 1.5rem; text-align: center; font-weight: 600; background: transparent; color: var(--color-text-main); outline: none; transition: all 0.3s ease; }
+        .otp-digit:focus { border-color: var(--color-primary); box-shadow: 0 0 0 4px rgba(0,124,120,0.1); }
+        .btn-verify { background: var(--color-bg-dark); color: white; padding: 1rem 2rem; border-radius: 30px; font-weight: 500; border: none; cursor: pointer; width: 100%; font-size: 1.1rem; transition: background 0.3s ease; display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
+        .btn-verify:hover { background: var(--color-primary); }
+
+        @media (max-width: 480px) {
+            .auth-modal { padding: 2rem 1.2rem; }
+            .otp-inputs { gap: 0.25rem; }
+            .otp-digit { width: 35px; height: 45px; font-size: 1.2rem; border-radius: 8px; }
+            .auth-icon { font-size: 3rem; margin-bottom: 0.5rem; }
+            .auth-modal h2 { font-size: 1.4rem; }
+            .auth-modal p { font-size: 0.85rem; margin-bottom: 1.5rem; }
+        }
+    </style>
+    <div class="auth-modal-overlay" id="authModal">
+        <div class="auth-modal">
+            <i class="ri-fingerprint-line auth-icon"></i>
+            <h2>Identity Verification</h2>
+            <p>Please enter the 6-digit code sent to your registered device to secure your medical profile.</p>
+            <div class="otp-inputs" id="otpInputs">
+                <input type="text" maxlength="1" class="otp-digit" autocomplete="off">
+                <input type="text" maxlength="1" class="otp-digit" autocomplete="off">
+                <input type="text" maxlength="1" class="otp-digit" autocomplete="off">
+                <input type="text" maxlength="1" class="otp-digit" autocomplete="off">
+                <input type="text" maxlength="1" class="otp-digit" autocomplete="off">
+                <input type="text" maxlength="1" class="otp-digit" autocomplete="off">
+            </div>
+            <button class="btn-verify" id="verifyBtn">Verify & Complete</button>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>

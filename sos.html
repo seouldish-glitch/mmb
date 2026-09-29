@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>mmb - SOS Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        img.logo, img.small-logo {
+            filter: drop-shadow(0 0 15px rgba(255,255,255,0.8)) drop-shadow(0 0 5px rgba(255,255,255,0.5));
+        }
+        
+        .sos-main {
+            padding: 2rem 4rem;
+            position: relative;
+            z-index: 1;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .sos-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: radial-gradient(circle at center, rgba(244, 67, 54, 0.15) 0%, var(--color-bg) 70%);
+            z-index: 0;
+            pointer-events: none;
+            animation: redPulse 4s infinite ease-in-out;
+        }
+
+        @keyframes redPulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        .sos-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: slideDownFade 0.8s ease-out forwards;
+        }
+        
+        .sos-header h1 {
+            color: #F44336;
+            font-size: 2.5rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .sos-trigger-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 4rem;
+            animation: scaleUpFade 0.8s 0.2s backwards;
+        }
+
+        .sos-btn {
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #FF5252, #D32F2F, #B71C1C);
+            border: 3px solid rgba(255, 138, 128, 0.4);
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            box-shadow: 
+                0 0 80px rgba(244, 67, 54, 0.6),
+                inset 0 20px 40px rgba(255, 255, 255, 0.3),
+                inset 0 -20px 40px rgba(0, 0, 0, 0.5),
+                0 20px 40px rgba(0,0,0,0.8);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .sos-btn::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -150%; width: 50%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transform: skewX(-25deg);
+            animation: orbShine 4s infinite;
+        }
+        @keyframes orbShine {
+            0% { left: -150%; }
+            20% { left: 200%; }
+            100% { left: 200%; }
+        }
+
+        .sos-btn::after {
+            content: '';
+            position: absolute;
+            top: -30px; left: -30px; right: -30px; bottom: -30px;
+            border-radius: 50%;
+            border: 2px solid rgba(244, 67, 54, 0.4);
+            animation: ringPulse 2s infinite;
+            pointer-events: none;
+        }
+
+        @keyframes ringPulse {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.3); opacity: 0; }
+        }
+
+        .sos-btn i { font-size: 4rem; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5)); }
+
+        .sos-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 
+                0 0 100px rgba(244, 67, 54, 0.8),
+                inset 0 20px 40px rgba(255, 255, 255, 0.4),
+                inset 0 -20px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .sos-btn:active {
+            transform: scale(0.95);
+        }
+
+        .sos-protocols {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            animation: slideUpFade 0.8s 0.4s backwards;
+        }
+
+        .protocol-card {
+            background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01));
+            border: 1px solid rgba(244, 67, 54, 0.2);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+        
+        .protocol-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(244, 67, 54, 0.5);
+            background: linear-gradient(145deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
+        }
+
+        .protocol-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 3px;
+            background: linear-gradient(90deg, transparent, #F44336, transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .protocol-card:hover::before { opacity: 1; }
+
+        .protocol-card i {
+            font-size: 2.5rem;
+            color: #F44336;
+            margin-bottom: 1rem;
+            display: inline-block;
+            filter: drop-shadow(0 0 10px rgba(244, 67, 54, 0.4));
+        }
+
+        .protocol-card h4 { font-size: 1.1rem; margin-bottom: 0.5rem; letter-spacing: 0.5px; }
+        .protocol-card p { font-size: 0.9rem; color: #aaa; line-height: 1.5; }
+
+        /* Countdown Overlay */
+        .sos-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0,0,0,0.9);
+            z-index: 999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .sos-overlay.active {
+            opacity: 1; visibility: visible;
+        }
+
+        .countdown-circle {
+            font-size: 8rem;
+            font-weight: 700;
+            color: #F44336;
+            margin-bottom: 2rem;
+            animation: pulse 1s infinite;
+        }
+
+        .cancel-btn {
+            background: transparent;
+            border: 2px solid white;
+            color: white;
+            padding: 1rem 3rem;
+            border-radius: 30px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .cancel-btn:hover { background: white; color: black; }
+
+        .triggered-msg { display: none; text-align: center; color: #4CAF50; }
+        .triggered-msg i { font-size: 5rem; margin-bottom: 1rem; }
+    </style>
+</head>
+<body class="loaded">
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <img src="mmb logo.png" alt="mmb logo" class="logo small-logo">
+            </div>
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="nav-item"><i class="ri-dashboard-line"></i> Overview</a>
+                <a href="profile.html" class="nav-item"><i class="ri-file-user-line"></i> Medical Profile</a>
+                <a href="sos.html" class="nav-item active" style="color: #F44336;"><i class="ri-alarm-warning-fill"></i> SOS Hub</a>
+                <a href="device.html" class="nav-item"><i class="ri-device-line"></i> Band Settings</a>
+                <a href="plans.html" class="nav-item"><i class="ri-bank-card-line"></i> Plans & Billing</a>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="#" class="nav-item"><i class="ri-settings-4-line"></i> Settings</a>
+                <a href="index.html" class="nav-item"><i class="ri-logout-box-r-line"></i> Logout</a>
+            </div>
+        </aside>
+
+        <div class="sos-bg"></div>
+
+        <!-- Main Content -->
+        <main class="sos-main">
+            
+            <header class="sos-header">
+                <h1>Emergency Control</h1>
+                <p>Use in case of severe medical emergencies or accidents.</p>
+            </header>
+
+            <div class="sos-trigger-container">
+                <button class="sos-btn" id="triggerBtn">
+                    <i class="ri-alarm-warning-line"></i>
+                    <span>SOS</span>
+                </button>
+            </div>
+
+            <div class="sos-protocols">
+                <div class="protocol-card">
+                    <i class="ri-map-pin-user-line"></i>
+                    <h4>Broadcast GPS</h4>
+                    <p>Live coordinates transmitted to emergency services.</p>
+                </div>
+                <div class="protocol-card">
+                    <i class="ri-hospital-line"></i>
+                    <h4>Transmit Profile</h4>
+                    <p>Medical history and blood type sent to dispatch.</p>
+                </div>
+                <div class="protocol-card">
+                    <i class="ri-group-line"></i>
+                    <h4>Alert Contacts</h4>
+                    <p>Automated SMS and calls to all emergency contacts.</p>
+                </div>
+            </div>
+
+            <div class="sos-history-section" style="margin-top: 4rem; animation: slideUpFade 0.8s 0.6s backwards;">
+                <h3 style="color: #fff; font-size: 1.2rem; font-weight: 500; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 1rem; margin-bottom: 1.5rem;">
+                    <i class="ri-history-line" style="color: var(--teal); margin-right: 0.5rem;"></i> Recent SOS Dispatches
+                </h3>
+                
+                <div class="timeline-feed" style="max-width: 800px; margin: 0 auto; background: rgba(0,0,0,0.4); padding: 2rem; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05);">
+                    
+                    <div class="timeline-item critical">
+                        <div class="timeline-marker"><i class="ri-alarm-warning-fill pulse-anim"></i></div>
+                        <div class="timeline-content">
+                            <div class="timeline-header">
+                                <h4>MANUAL_SOS_TRIGGER</h4>
+                                <span class="timeline-badge text-red">DISPATCHED</span>
+                            </div>
+                            <p class="sys-msg">User initiated manual emergency override via dashboard. Ambulance and local police dispatched.</p>
+                            <div class="timeline-meta">
+                                <span><i class="ri-time-line"></i> Aug 14, 18:45:11</span>
+                                <span><i class="ri-map-pin-line"></i> SLIIT Malabe (6.9147, 79.9733)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item warning">
+                        <div class="timeline-marker"><i class="ri-alert-fill"></i></div>
+                        <div class="timeline-content">
+                            <div class="timeline-header">
+                                <h4>AUTO_FALL_DETECTED</h4>
+                                <span class="timeline-badge text-orange">CANCELLED</span>
+                            </div>
+                            <p class="sys-msg">Band sensor registered 4.2G impact. User manually cancelled SOS countdown before dispatch.</p>
+                            <div class="timeline-meta">
+                                <span><i class="ri-time-line"></i> Oct 12, 14:30:05</span>
+                                <span><i class="ri-user-line"></i> Cancelled by User</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item success">
+                        <div class="timeline-marker"><i class="ri-qr-code-line"></i></div>
+                        <div class="timeline-content">
+                            <div class="timeline-header">
+                                <h4>PUBLIC_QR_SCAN</h4>
+                                <span class="timeline-badge text-green">ASSISTED</span>
+                            </div>
+                            <p class="sys-msg">Bystander scanned wristband QR code and requested EMS assistance via public interface.</p>
+                            <div class="timeline-meta">
+                                <span><i class="ri-time-line"></i> Dec 05, 09:12:44</span>
+                                <span><i class="ri-smartphone-line"></i> Scanned by Unknown Device</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- SOS Countdown Overlay -->
+    <div class="sos-overlay" id="sosOverlay">
+        <div id="countdownState">
+            <h2 style="color: white; font-size: 2rem; margin-bottom: 1rem;">SOS Protocol Initiated</h2>
+            <div class="countdown-circle" id="countdownTimer">5</div>
+            <button class="cancel-btn" id="cancelBtn">Cancel SOS</button>
+        </div>
+        <div id="triggeredState" class="triggered-msg">
+            <i class="ri-checkbox-circle-fill"></i>
+            <h2>SOS Dispatched</h2>
+            <p style="color: white; margin-top: 1rem; font-size: 1.2rem;">Ambulance is en route to your location.<br>Contacts have been notified.</p>
+            <button class="cancel-btn" style="margin-top: 2rem; border-color: #4CAF50; color: #4CAF50;" onclick="window.location.reload()">Reset Demo</button>
+        </div>
+    </div>
+
+    <script>
+        const triggerBtn = document.getElementById('triggerBtn');
+        const overlay = document.getElementById('sosOverlay');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const timerEl = document.getElementById('countdownTimer');
+        const countState = document.getElementById('countdownState');
+        const trigState = document.getElementById('triggeredState');
+
+        let countdown;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Get user ID from URL or localStorage
+            const urlParams = new URLSearchParams(window.location.search);
+            let userId = urlParams.get('id');
+
+            if (!userId) {
+                userId = localStorage.getItem('mmbUserId');
+                if (userId) {
+                    const newUrl = new URL(window.location);
+                    newUrl.searchParams.set('id', userId);
+                    window.history.replaceState({}, '', newUrl);
+                } else {
+                    window.location.href = 'login.html';
+                    return;
+                }
+            } else {
+                localStorage.setItem('mmbUserId', userId);
+            }
+
+            // Update sidebar links to pass userId
+            document.querySelectorAll('.sidebar-nav .nav-item').forEach(link => {
+                if(link.href && !link.href.includes('#')) {
+                    const url = new URL(link.href);
+                    url.searchParams.set('id', userId);
+                    link.href = url.toString();
+                }
+            });
+
+            // Make logout clear the storage
+            const logoutBtn = document.querySelector('.sidebar-footer a[href="index.html"]');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', () => {
+                    localStorage.removeItem('mmbUserId');
+                });
+            }
+        });
+
+        triggerBtn.addEventListener('click', () => {
+            overlay.classList.add('active');
+            countState.style.display = 'block';
+            trigState.style.display = 'none';
+            let timeLeft = 5;
+            timerEl.innerText = timeLeft;
+
+            countdown = setInterval(() => {
+                timeLeft--;
+                timerEl.innerText = timeLeft;
+                if (timeLeft <= 0) {
+                    clearInterval(countdown);
+                    // Trigger SOS
+                    countState.style.display = 'none';
+                    trigState.style.display = 'block';
+                }
+            }, 1000);
+        });
+
+        cancelBtn.addEventListener('click', () => {
+            clearInterval(countdown);
+            overlay.classList.remove('active');
+        });
+    </script>
+</body>
+</html>

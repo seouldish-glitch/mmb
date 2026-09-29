@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>mmb - Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="loaded">
+    <div id="staticLoader" class="static-loader">
+        <div class="loader-content">
+            <div class="loader-counter" id="loaderCounter">0%</div>
+        </div>
+        <script>
+            (function(){
+                let c = document.getElementById('loaderCounter');
+                let count = 0;
+                let intv = setInterval(() => {
+                    count += Math.floor(Math.random() * 15) + 5;
+                    if(count >= 100) { count = 100; clearInterval(intv); }
+                    c.innerText = count + '%';
+                }, 100);
+            })();
+        </script>
+    </div>
+
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <img src="mmb logo.png" alt="mmb logo" class="logo small-logo">
+            </div>
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="nav-item active"><i class="ri-dashboard-line"></i> Overview</a>
+                <a href="profile.html" class="nav-item"><i class="ri-file-user-line"></i> Medical Profile</a>
+                <a href="sos.html" class="nav-item" style="color: #F44336;"><i class="ri-alarm-warning-fill"></i> SOS Hub</a>
+                <a href="device.html" class="nav-item"><i class="ri-device-line"></i> Band Settings</a>
+                <a href="plans.html" class="nav-item"><i class="ri-bank-card-line"></i> Plans & Billing</a>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="#" class="nav-item" id="themeToggleBtn"><i class="ri-moon-fill"></i> Dark Theme</a>
+                <a href="#" class="nav-item"><i class="ri-settings-4-line"></i> Settings</a>
+                <a href="index.html" class="nav-item"><i class="ri-logout-box-r-line"></i> Logout</a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="dashboard-main">
+            <header class="dashboard-header">
+                <div class="header-greeting">
+                    <h1>Welcome back, Jane.</h1>
+                    <p>Your medical profile is 100% complete and fully encrypted.</p>
+                </div>
+                <div class="header-actions">
+                    <a href="pair.html" class="nav-btn submit-btn show" style="padding: 0.8rem 1.5rem; transform: none;">
+                        <i class="ri-qr-scan-2-line"></i> Pair Smart Band
+                    </a>
+                    <button class="icon-btn"><i class="ri-notification-3-line"></i></button>
+                    <div class="user-avatar">JD</div>
+                </div>
+            </header>
+
+            <div class="dashboard-grid expanded-grid">
+                
+                <!-- Live Vitals Widget -->
+                <div class="widget vitals-widget span-2">
+                    <div class="widget-header">
+                        <h3>Live Telemetry</h3>
+                        <div class="live-indicator"><span class="pulse-dot"></span> Live Sync</div>
+                    </div>
+                    <div class="vitals-container">
+                        <div class="vital-box">
+                            <div class="vital-icon pulse-anim"><i class="ri-heart-pulse-fill"></i></div>
+                            <div class="vital-value"><span id="bpmVal">74</span><small>bpm</small></div>
+                            <div class="vital-label">Heart Rate</div>
+                        </div>
+                        <div class="vital-box">
+                            <div class="vital-icon text-blue"><i class="ri-drop-fill"></i></div>
+                            <div class="vital-value"><span id="spo2Val">98</span><small>%</small></div>
+                            <div class="vital-label">Blood Oxygen</div>
+                        </div>
+                        <div class="vital-box">
+                            <div class="vital-icon text-orange"><i class="ri-stethoscope-line"></i></div>
+                            <div class="vital-value"><span id="bpVal">120/80</span><small>mmHg</small></div>
+                            <div class="vital-label">Blood Pressure</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Band Status -->
+                <div class="widget band-widget">
+                    <div class="widget-header">
+                        <h3>Device Status</h3>
+                        <i class="ri-battery-charge-line text-green"></i>
+                    </div>
+                    <div class="band-status">
+                        <img src="mmb advanced band.jpeg" alt="MMB Advanced Band" class="device-render">
+                        <div class="band-details">
+                            <strong>mmb-v2 Active</strong>
+                            <p class="text-green">Connected &middot; 84%</p>
+                        </div>
+                    </div>
+                    <button class="btn-outline mt-2 w-100" id="pingBandBtn" style="display: flex; justify-content: center; align-items: center; gap: 0.5rem; border-color: var(--color-primary); color: var(--color-primary);">
+                        <i class="ri-volume-up-line"></i> Find My Band
+                    </button>
+                </div>
+
+                <!-- Activity Analytics Widget -->
+                <div class="widget analytics-widget span-2">
+                    <div class="widget-header">
+                        <h3>Heart Rate Analytics</h3>
+                        <div class="log-actions">
+                            <span class="log-filter">This Week</span>
+                            <i class="ri-bar-chart-2-line"></i>
+                        </div>
+                    </div>
+                    <div class="analytics-chart" id="analyticsChart">
+                        <!-- Bars generated by JS -->
+                    </div>
+                </div>
+
+                <!-- Profile Status -->
+                <div class="widget profile-widget">
+                    <div class="widget-header">
+                        <h3>Profile Integrity</h3>
+                        <i class="ri-shield-check-fill status-icon"></i>
+                    </div>
+                    <div class="widget-body">
+                        <div class="status-bar">
+                            <div class="status-fill" style="width: 100%;"></div>
+                        </div>
+                        <p class="status-text">All emergency and medical data is up to date.</p>
+                        <button class="btn-outline mt-2 w-100">Update Medical Profile</button>
+                    </div>
+                </div>
+
+                <!-- Live Location Tracking Widget -->
+                <div class="widget location-widget span-2">
+                    <div class="widget-header">
+                        <h3>GPS Location Tracking</h3>
+                        <div class="live-indicator"><span class="pulse-dot"></span> Signal Locked</div>
+                    </div>
+                    <div class="location-map-container">
+                        <!-- Simulated CSS Map Grid replaced with Dark-Mode Google Map -->
+                        <iframe class="google-map-iframe" src="https://maps.google.com/maps?q=SLIIT%20Malabe&t=&z=16&ie=UTF8&iwloc=&output=embed" allowfullscreen="" loading="lazy"></iframe>
+                        
+                        <!-- Radar / Beacon Effect -->
+                        <div class="beacon-pulse-wrapper">
+                            <div class="beacon-ring r-1"></div>
+                            <div class="beacon-ring r-2"></div>
+                            <div class="beacon-core"><i class="ri-map-pin-user-fill"></i></div>
+                        </div>
+
+                        <!-- Floating HUD -->
+                        <div class="location-hud">
+                            <div class="coord-box">
+                                <span class="coord-label">LATITUDE</span>
+                                <span class="coord-val" id="latVal">6.9147</span>&deg; N
+                            </div>
+                            <div class="coord-box">
+                                <span class="coord-label">LONGITUDE</span>
+                                <span class="coord-val" id="lngVal">79.9733</span>&deg; E
+                            </div>
+                            <div class="coord-box">
+                                <span class="coord-label">ALTITUDE</span>
+                                <span>25m</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Subscription Plan Widget -->
+                <div class="widget plan-widget">
+                    <div class="widget-header">
+                        <h3>Active Subscription</h3>
+                        <i class="ri-vip-crown-fill text-orange"></i>
+                    </div>
+                    <div class="plan-details">
+                        <div class="plan-badge">mmb Premium Tier</div>
+                        <ul class="plan-features">
+                            <li><i class="ri-check-line text-green"></i> 24/7 Emergency Dispatch</li>
+                            <li><i class="ri-check-line text-green"></i> Global GPS Tracking</li>
+                            <li><i class="ri-check-line text-green"></i> Auto-SOS Fall Detection</li>
+                        </ul>
+                        <button class="btn-outline mt-2 w-100">Manage Plan</button>
+                    </div>
+                </div>
+
+                <!-- Digital QR Widget -->
+                <div class="widget qr-widget">
+                    <div class="widget-header">
+                        <h3>Digital Medical ID</h3>
+                        <i class="ri-qr-code-line text-blue"></i>
+                    </div>
+                    <div class="qr-container" style="display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; padding: 1rem 0;">
+                        <a href="scan-response.html" id="qrSimulationLink" target="_blank" style="text-decoration: none; display: flex; flex-direction: column; align-items: center;">
+                            <img id="dynamicQrImage" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=mmb-medical-id-jane-doe" alt="Digital Medical QR" style="border-radius: 10px; border: 4px solid white; background: white; width: 120px; height: 120px; margin-bottom: 1rem; box-shadow: 0 4px 10px rgba(0,0,0,0.1); cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                            <p style="text-align: center; font-size: 0.85rem; color: var(--color-text-muted);">Scan with real phone!</p>
+                        </a>
+                    </div>
+                    <button class="btn-outline mt-2 w-100" style="display: flex; justify-content: center; align-items: center; gap: 0.5rem; border-color: var(--color-primary); color: var(--color-primary);">
+                        <i class="ri-download-2-line"></i> Save to Phone
+                    </button>
+                </div>
+
+                <!-- Recent Event Logs (Old Logs) -->
+                <div class="widget history-widget span-2">
+                    <div class="widget-header">
+                        <h3>System Event History</h3>
+                        <div class="log-actions">
+                            <span class="log-filter">Last 90 Days</span>
+                            <i class="ri-history-line"></i>
+                        </div>
+                    </div>
+                    <div class="timeline-feed">
+                        
+                        <div class="timeline-item warning">
+                            <div class="timeline-marker"><i class="ri-alarm-warning-fill pulse-anim"></i></div>
+                            <div class="timeline-content">
+                                <div class="timeline-header">
+                                    <h4>SYS_FALL_DETECT_TRIGGER</h4>
+                                    <span class="timeline-badge text-orange">OVERRIDDEN</span>
+                                </div>
+                                <p class="sys-msg">Impact force: 4.2G detected. User manually aborted auto-SOS sequence.</p>
+                                <div class="timeline-meta">
+                                    <span><i class="ri-time-line"></i> Oct 12, 14:30:05</span>
+                                    <span><i class="ri-fingerprint-line"></i> UUID: f89a-2b1c</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item success">
+                            <div class="timeline-marker"><i class="ri-qr-code-line"></i></div>
+                            <div class="timeline-content">
+                                <div class="timeline-header">
+                                    <h4>HARDWARE_AUTH_SUCCESS</h4>
+                                    <span class="timeline-badge text-green">VERIFIED</span>
+                                </div>
+                                <p class="sys-msg">mmb-v2 Pro [MAC: 00:1B:44:11:3A:B7] paired via secure QR scan.</p>
+                                <div class="timeline-meta">
+                                    <span><i class="ri-time-line"></i> Sep 28, 09:15:22</span>
+                                    <span><i class="ri-fingerprint-line"></i> UUID: e42c-9a01</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item critical">
+                            <div class="timeline-marker"><i class="ri-hospital-fill"></i></div>
+                            <div class="timeline-content">
+                                <div class="timeline-header">
+                                    <h4>MANUAL_SOS_DISPATCH</h4>
+                                    <span class="timeline-badge text-red">CRITICAL</span>
+                                </div>
+                                <p class="sys-msg">Override initiated. EMT dispatched to: 6.9147&deg; N, 79.9733&deg; E (SLIIT Malabe).</p>
+                                <div class="timeline-meta">
+                                    <span><i class="ri-time-line"></i> Aug 14, 18:45:11</span>
+                                    <span><i class="ri-fingerprint-line"></i> UUID: a19f-7c44</span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            // 1. Fetch User Data from MongoDB
+            const urlParams = new URLSearchParams(window.location.search);
+            let userId = urlParams.get('id');
+            
+            // Fallback to localStorage if id is missing in URL (fixes bug where navigating away loses id)
+            if (!userId) {
+                userId = localStorage.getItem('mmbUserId');
+                if (userId) {
+                    // Update URL silently without reloading
+                    const newUrl = new URL(window.location);
+                    newUrl.searchParams.set('id', userId);
+                    window.history.replaceState({}, '', newUrl);
+                } else {
+                    // Not logged in, redirect to login
+                    window.location.href = 'login.html';
+                    return;
+                }
+            } else {
+                // Ensure it's in localStorage for other pages
+                localStorage.setItem('mmbUserId', userId);
+            }
+
+            // Update all sidebar links to keep the ID
+            document.querySelectorAll('.sidebar-nav .nav-item').forEach(link => {
+                if(link.href && !link.href.includes('#')) {
+                    const url = new URL(link.href);
+                    url.searchParams.set('id', userId);
+                    link.href = url.toString();
+                }
+            });
+
+            // Make logout clear the storage
+            const logoutBtn = document.querySelector('.sidebar-footer a[href="index.html"]');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', (e) => {
+                    localStorage.removeItem('mmbUserId');
+                });
+            }
+
+            let currentUser = null;
+
+            if (userId) {
+                try {
+                    const host = window.location.hostname || 'localhost';
+                    const response = await fetch(`http://${host}:3000/api/user/${userId}`);
+                    const result = await response.json();
+                    if(result.success) {
+                        currentUser = result.data;
+                        // Update Greeting
+                        const nameElement = document.querySelector('.header-greeting h1');
+                        if (nameElement && currentUser.fullName) {
+                            nameElement.innerHTML = `Welcome back, <span>${currentUser.fullName.split(' ')[0]}</span>`;
+                        }
+                    }
+                } catch(e) {
+                    console.error("Failed to load user data from Mongo", e);
+                }
+            }
+
+            // Hide Loader
+            const staticLoader = document.getElementById('staticLoader');
+            if (staticLoader) {
+                setTimeout(() => {
+                    staticLoader.classList.add('hidden');
+                }, 1500);
+            }
+
+            // Live Vitals Simulation
+            const bpmVal = document.getElementById('bpmVal');
+            const spo2Val = document.getElementById('spo2Val');
+            const bpVal = document.getElementById('bpVal');
+            
+            setInterval(() => {
+                let currentBpm = parseInt(bpmVal.innerText);
+                let newBpm = currentBpm + (Math.random() > 0.5 ? 1 : -1) * Math.floor(Math.random() * 3);
+                if (newBpm > 85) newBpm = 82;
+                if (newBpm < 65) newBpm = 68;
+                bpmVal.innerText = newBpm;
+
+                if (Math.random() > 0.8) {
+                    spo2Val.innerText = Math.random() > 0.5 ? 99 : 98;
+                }
+                
+                if (Math.random() > 0.7 && bpVal) {
+                    let sys = 118 + Math.floor(Math.random() * 6);
+                    let dia = 78 + Math.floor(Math.random() * 5);
+                    bpVal.innerText = sys + '/' + dia;
+                }
+            }, 2000);
+
+            // Live GPS Tracking Simulation
+            const latVal = document.getElementById('latVal');
+            const lngVal = document.getElementById('lngVal');
+            
+            setInterval(() => {
+                let lat = parseFloat(latVal.innerText);
+                let lng = parseFloat(lngVal.innerText);
+                
+                // Simulate slow walking pace movement
+                lat += (Math.random() - 0.5) * 0.0001;
+                lng += (Math.random() - 0.5) * 0.0001;
+                
+                latVal.innerText = lat.toFixed(4);
+                lngVal.innerText = lng.toFixed(4);
+            }, 3000);
+
+            // Populate Analytics Chart
+            const chart = document.getElementById('analyticsChart');
+            const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+            const data = [65, 80, 45, 90, 75, 55, 85]; // Percentages
+
+            days.forEach((day, index) => {
+                const col = document.createElement('div');
+                col.className = 'chart-col';
+                
+                const barWrapper = document.createElement('div');
+                barWrapper.className = 'bar-wrapper';
+                
+                const barFill = document.createElement('div');
+                barFill.className = 'bar-fill';
+                barFill.style.height = '0%'; // Start at 0 for animation
+                
+                const label = document.createElement('div');
+                label.className = 'bar-label';
+                label.innerText = day;
+
+                barWrapper.appendChild(barFill);
+                col.appendChild(barWrapper);
+                col.appendChild(label);
+                chart.appendChild(col);
+
+                // Animate bars on load
+                setTimeout(() => {
+                    barFill.style.height = data[index] + '%';
+                }, 300 + (index * 100)); // Staggered animation
+            });
+
+            // Ping Band Logic
+            const pingBtn = document.getElementById('pingBandBtn');
+            if (pingBtn) {
+                pingBtn.addEventListener('click', () => {
+                    const originalHTML = pingBtn.innerHTML;
+                    pingBtn.innerHTML = '<i class="ri-volume-up-fill pulse-anim"></i> Playing Sound...';
+                    pingBtn.style.background = 'rgba(0, 124, 120, 0.1)';
+                    
+                    setTimeout(() => {
+                        pingBtn.innerHTML = '<i class="ri-check-line"></i> Found';
+                        pingBtn.style.background = 'rgba(76, 175, 80, 0.1)';
+                        pingBtn.style.borderColor = '#4CAF50';
+                        pingBtn.style.color = '#4CAF50';
+
+                        setTimeout(() => {
+                            pingBtn.innerHTML = originalHTML;
+                            pingBtn.style.background = 'transparent';
+                            pingBtn.style.borderColor = 'var(--color-primary)';
+                            pingBtn.style.color = 'var(--color-primary)';
+                        }, 2000);
+                    }, 4000);
+                });
+            }
+
+            // Support chat toggle logic moved to the end of the file
+            // Theme Toggle Logic
+            const themeBtn = document.getElementById('themeToggleBtn');
+            if (themeBtn) {
+                // Check local storage for theme
+                if (localStorage.getItem('theme') === 'dark') {
+                    document.body.classList.add('dark-theme');
+                    themeBtn.innerHTML = '<i class="ri-sun-fill"></i> Light Theme';
+                }
+
+                themeBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    document.body.classList.toggle('dark-theme');
+                    if (document.body.classList.contains('dark-theme')) {
+                        localStorage.setItem('theme', 'dark');
+                        themeBtn.innerHTML = '<i class="ri-sun-fill"></i> Light Theme';
+                    } else {
+                        localStorage.setItem('theme', 'light');
+                        themeBtn.innerHTML = '<i class="ri-moon-fill"></i> Dark Theme';
+                    }
+                });
+            }
+            
+            function triggerDashboardEmergencyUI() {
+                // 1. Add Event Log
+                const timeline = document.querySelector('.timeline-feed');
+                if (timeline) {
+                    const newLog = document.createElement('div');
+                    newLog.className = 'timeline-item critical';
+                    newLog.innerHTML = `
+                        <div class="timeline-marker"><i class="ri-qr-scan-2-line pulse-anim"></i></div>
+                        <div class="timeline-content" style="border-color: #F44336; transform: translateX(5px);">
+                            <div class="timeline-header">
+                                <h4>EMERGENCY_PROFILE_ACCESSED</h4>
+                                <span class="timeline-badge text-red">ACTIVE</span>
+                            </div>
+                            <p class="sys-msg">Digital Medical ID was just scanned. Location transmission initiated.</p>
+                            <div class="timeline-meta">
+                                <span><i class="ri-time-line"></i> Just now</span>
+                                <span><i class="ri-fingerprint-line"></i> SCANNER_IP_LOGGED</span>
+                            </div>
+                        </div>
+                    `;
+                    timeline.prepend(newLog);
+                }
+
+                // 2. Open AI Support Chat automatically
+                const supportWindow = document.getElementById('supportWindow');
+                const fab = document.getElementById('supportFab');
+                if (supportWindow && !supportWindow.classList.contains('active')) {
+                    supportWindow.classList.add('active');
+                    fab.innerHTML = '<i class="ri-close-line"></i>';
+                    
+                    // Add a message from AI
+                    const chatBody = document.querySelector('.support-body');
+                    const alertMsg = document.createElement('div');
+                    alertMsg.className = 'chat-msg received';
+                    alertMsg.innerHTML = `
+                        <div class="msg-avatar" style="background: linear-gradient(135deg, #F44336, #D32F2F);">!</div>
+                        <div class="msg-bubble" style="border-left: 3px solid #F44336; color: #F44336; font-weight: 500;">CRITICAL ALERT: Your emergency QR code was just scanned. Are you safe? EMS dispatch is standing by.</div>
+                    `;
+                    chatBody.appendChild(alertMsg);
+                    chatBody.scrollTop = chatBody.scrollHeight;
+                }
+                
+                // 3. Make Map SOS Mode
+                const beaconCore = document.querySelector('.beacon-core');
+                const rings = document.querySelectorAll('.beacon-ring');
+                if(beaconCore) {
+                    beaconCore.style.background = '#F44336';
+                    beaconCore.style.boxShadow = '0 0 15px #F44336';
+                    beaconCore.innerHTML = '<i class="ri-alarm-warning-fill pulse-anim"></i>';
+                }
+                rings.forEach(ring => ring.style.borderColor = '#F44336');
+            }
+
+            // Fallback Manual QR Click Simulation
+            const qrLink = document.getElementById('qrSimulationLink');
+            if (qrLink) {
+                qrLink.addEventListener('click', triggerDashboardEmergencyUI);
+            }
+
+            // Real-Time Server-Sent Events (SSE) Listener
+            const sseHost = window.location.hostname || 'localhost';
+            const sseUrl = 'http://' + sseHost + ':3000/api/stream';
+            const eventSource = new EventSource(sseUrl);
+            eventSource.onmessage = function(event) {
+                try {
+                    const data = JSON.parse(event.data);
+                    console.log("Real-time Server Event Received:", data);
+                    if (data.event === 'EMERGENCY_SCAN') {
+                        triggerDashboardEmergencyUI();
+                    }
+                } catch(e) {}
+            };
+            eventSource.onerror = function(err) {
+                console.error("SSE Connection Error. Is server.js running?");
+            };
+
+            // Dynamically Generate Real QR Code for actual phone scanning
+            const qrImage = document.getElementById('dynamicQrImage');
+            if (qrImage) {
+                // Gets current URL (e.g. http://192.168.1.5:5173) and appends scan-response.html
+                let basePath = window.location.pathname;
+                if(basePath.endsWith('dashboard.html')) {
+                    basePath = basePath.replace('dashboard.html', '');
+                } else if (!basePath.endsWith('/')) {
+                    basePath += '/';
+                }
+                const scanUrl = window.location.origin + basePath + `scan-response.html?id=${userId || 'demo'}`;
+                qrImage.src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(scanUrl)}`;
+                
+                // Wrap it in a link so you can click it on PC to test
+                const link = document.createElement('a');
+                link.href = scanUrl;
+                link.target = "_blank"; // Opens in new tab
+                qrImage.parentNode.insertBefore(link, qrImage);
+                link.appendChild(qrImage);
+                qrImage.style.cursor = "pointer";
+            }
+        });
+    </script>
+
+    <!-- Floating Live Support Chat -->
+    <div class="support-fab" id="supportFab">
+        <i class="ri-robot-2-fill"></i>
+    </div>
+
+    <div class="support-window" id="supportWindow">
+        <div class="support-header">
+            <div>
+                <h4><span class="pulse-dot" style="display:inline-block; margin-right:5px; background:#4CAF50;"></span> mmb AI Assistant</h4>
+                <p>Analyzing Telemetry...</p>
+            </div>
+            <a href="tel:112" class="call-support-btn" style="text-decoration: none; background: #F44336;"><i class="ri-alarm-warning-fill"></i> SOS</a>
+        </div>
+        <div class="support-body" id="chatBody">
+            <div class="chat-msg received">
+                <div class="msg-avatar" style="background: linear-gradient(135deg, #007C78, #005F5C);">AI</div>
+                <div class="msg-bubble">Hello! I've analyzed your telemetry data. Your resting heart rate is optimal, but your SpO2 dropped slightly at 3:00 AM. Did you use your inhaler today?</div>
+            </div>
+        </div>
+        <div class="support-footer">
+            <input type="text" id="chatInput" placeholder="Ask AI Health Assistant..." autocomplete="off">
+            <button id="chatSendBtn"><i class="ri-send-plane-fill"></i></button>
+        </div>
+    </div>
+
+    <script>
+    (function() {
+        const chatBody = document.getElementById('chatBody');
+        const chatInput = document.getElementById('chatInput');
+        const chatSendBtn = document.getElementById('chatSendBtn');
+        const fab = document.getElementById('supportFab');
+        const supportWindow = document.getElementById('supportWindow');
+
+        // Toggle chat window
+        if (fab && supportWindow) {
+            fab.addEventListener('click', () => {
+                supportWindow.classList.toggle('active');
+                fab.innerHTML = supportWindow.classList.contains('active')
+                    ? '<i class="ri-close-line"></i>'
+                    : '<i class="ri-robot-2-fill"></i>';
+                if (supportWindow.classList.contains('active')) {
+                    setTimeout(() => chatInput.focus(), 300);
+                }
+            });
+        }
+
+        function addMessage(text, type) {
+            const msg = document.createElement('div');
+            msg.className = 'chat-msg ' + type;
+            if (type === 'received') {
+                msg.innerHTML = '<div class="msg-avatar" style="background: linear-gradient(135deg, #007C78, #005F5C);">AI</div><div class="msg-bubble">' + text + '</div>';
+            } else {
+                msg.innerHTML = '<div class="msg-bubble">' + text + '</div>';
+            }
+            chatBody.appendChild(msg);
+            chatBody.scrollTop = chatBody.scrollHeight;
+        }
+
+        function addTypingIndicator() {
+            const typing = document.createElement('div');
+            typing.className = 'chat-msg received';
+            typing.id = 'typingIndicator';
+            typing.innerHTML = '<div class="msg-avatar" style="background: linear-gradient(135deg, #007C78, #005F5C);">AI</div><div class="msg-bubble" style="opacity:0.6;">Analyzing<span class="typing-dots">...</span></div>';
+            chatBody.appendChild(typing);
+            chatBody.scrollTop = chatBody.scrollHeight;
+        }
+
+        function removeTypingIndicator() {
+            const t = document.getElementById('typingIndicator');
+            if (t) t.remove();
+        }
+
+        function getAIReply(input) {
+            const lower = input.toLowerCase().trim();
+
+            // Yes responses
+            if (lower === 'yes' || lower === 'yeah' || lower === 'yep' || lower === 'y') {
+                const yesReplies = [
+                    "Great! I've logged that. Your vitals look stable. Keep it up! 💪",
+                    "Excellent. I've updated your health log. Your SpO2 is now back in the safe range. Have a great day!",
+                    "Perfect. I've recorded the dosage and timestamp. Everything looks good on your end. Stay hydrated! 💧",
+                    "Noted! Your telemetry data confirms improvement. No further action needed right now."
+                ];
+                return yesReplies[Math.floor(Math.random() * yesReplies.length)];
+            }
+
+            // No responses
+            if (lower === 'no' || lower === 'nope' || lower === 'nah' || lower === 'n') {
+                const noReplies = [
+                    "⚠️ I'd recommend using your prescribed inhaler soon. Your SpO2 was at 94% earlier which is slightly below optimal. Should I set a reminder?",
+                    "I see. Based on your telemetry, I'd suggest taking your medication within the next hour. Your oxygen levels dipped overnight. Want me to alert your doctor?",
+                    "Understood. I've flagged this in your health log. Please remember to take your medication. I'll check back in 2 hours."
+                ];
+                return noReplies[Math.floor(Math.random() * noReplies.length)];
+            }
+
+            // Help
+            if (lower.includes('help') || lower.includes('sos') || lower.includes('emergency')) {
+                return "🚨 I'm alerting emergency services now. Your GPS coordinates (6.9147° N, 79.9733° E) have been transmitted. Stay calm, help is on the way. Your emergency contact has also been notified.";
+            }
+
+            // Heart rate
+            if (lower.includes('heart') || lower.includes('pulse') || lower.includes('bpm')) {
+                return "Your current resting heart rate is 72 BPM, which is within the healthy range (60-100 BPM). Your average over the last 24 hours was 68 BPM. No irregularities detected. 💚";
+            }
+
+            // Blood pressure
+            if (lower.includes('blood pressure') || lower.includes('bp')) {
+                return "Your last recorded blood pressure was 118/76 mmHg — that's perfectly normal! I recommend checking again after lunch. Want me to set a reminder?";
+            }
+
+            // Sleep
+            if (lower.includes('sleep') || lower.includes('rest')) {
+                return "You slept for 6h 42m last night. Deep sleep: 1h 23m, REM: 2h 05m. Your SpO2 dipped to 94% at 3:00 AM but recovered by 4:15 AM. Overall sleep quality: 78%. 🌙";
+            }
+
+            // Medication
+            if (lower.includes('medication') || lower.includes('medicine') || lower.includes('inhaler') || lower.includes('pill')) {
+                return "💊 Your current prescribed medications: Albuterol Inhaler (as needed). Last recorded usage was yesterday at 8:15 AM. Would you like me to log a new dose?";
+            }
+
+            // Thank you
+            if (lower.includes('thank') || lower.includes('thanks')) {
+                return "You're welcome! I'm always here monitoring your vitals 24/7. Stay healthy! 😊";
+            }
+
+            // Hi / Hello
+            if (lower.includes('hi') || lower.includes('hello') || lower.includes('hey')) {
+                return "Hello! 👋 I'm your mmb AI Health Assistant. I can help you with your vitals, medication reminders, sleep analysis, or emergency dispatch. What would you like to know?";
+            }
+
+            // Default
+            const defaults = [
+                "I'm currently monitoring your vitals in real-time. Heart rate: 72 BPM, SpO2: 97%, Temp: 36.8°C. Everything looks good! Is there anything specific you'd like to know?",
+                "I've noted your message. Based on your current telemetry, all vitals are within normal range. Can I help you with anything else?",
+                "Interesting! I'll factor that into your health profile. Meanwhile, your band is detecting stable vitals. Would you like a detailed health report?"
+            ];
+            return defaults[Math.floor(Math.random() * defaults.length)];
+        }
+
+        function sendMessage() {
+            const text = chatInput.value.trim();
+            if (!text) return;
+
+            addMessage(text, 'sent');
+            chatInput.value = '';
+
+            // Show typing indicator
+            addTypingIndicator();
+
+            // Simulate AI thinking delay
+            const delay = 800 + Math.random() * 1200;
+            setTimeout(() => {
+                removeTypingIndicator();
+                addMessage(getAIReply(text), 'received');
+            }, delay);
+        }
+
+        chatSendBtn.addEventListener('click', sendMessage);
+        chatInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+    })();
+    </script>
+</body>
+</html>
