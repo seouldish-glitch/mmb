@@ -315,8 +315,8 @@
 
             if (userId) {
                 try {
-                    const host = window.location.hostname || 'localhost';
-                    const response = await fetch(`http://${host}:3000/api/user/${userId}`);
+                    const backendUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:3000' : window.location.origin;
+                    const response = await fetch(`${backendUrl}/api/user/${userId}`);
                     const result = await response.json();
                     if(result.success) {
                         currentUser = result.data;
@@ -515,22 +515,21 @@
                 qrLink.addEventListener('click', triggerDashboardEmergencyUI);
             }
 
-            // Real-Time Server-Sent Events (SSE) Listener
-            const sseHost = window.location.hostname || 'localhost';
-            const sseUrl = 'http://' + sseHost + ':3000/api/stream';
-            const eventSource = new EventSource(sseUrl);
-            eventSource.onmessage = function(event) {
+            // Serverless Polling (Vercel Compatible) instead of SSE
+            let alertTriggered = false;
+            const backendUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:3000' : window.location.origin;
+            
+            setInterval(async () => {
+                if(!userId || alertTriggered) return;
                 try {
-                    const data = JSON.parse(event.data);
-                    console.log("Real-time Server Event Received:", data);
-                    if (data.event === 'EMERGENCY_SCAN') {
+                    const res = await fetch(`${backendUrl}/api/user/${userId}`);
+                    const json = await res.json();
+                    if(json.success && json.data.sosActive) {
+                        alertTriggered = true;
                         triggerDashboardEmergencyUI();
                     }
                 } catch(e) {}
-            };
-            eventSource.onerror = function(err) {
-                console.error("SSE Connection Error. Is server.js running?");
-            };
+            }, 3000);
 
             // Dynamically Generate Real QR Code for actual phone scanning
             const qrImage = document.getElementById('dynamicQrImage');

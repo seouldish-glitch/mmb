@@ -227,8 +227,7 @@
             const password = document.getElementById('loginPassword').value;
             
             try {
-                const host = window.location.hostname || 'localhost';
-                const backendUrl = 'http://' + host + ':3000';
+                const backendUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:3000' : window.location.origin;
                 const response = await fetch(backendUrl + '/api/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },

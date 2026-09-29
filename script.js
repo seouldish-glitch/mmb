@@ -220,9 +220,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     const formData = new FormData(form);
                     const userData = Object.fromEntries(formData.entries());
 
-                    // Send to MongoDB via local server (Dynamic IP for Mobile testing)
-                    const host = window.location.hostname || 'localhost';
-                    const backendUrl = 'http://' + host + ':3000';
+                    // Send to MongoDB via local server or Vercel
+                    const backendUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:3000' : window.location.origin;
                     const response = await fetch(backendUrl + '/api/register', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },

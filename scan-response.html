@@ -421,8 +421,7 @@
 
             if (userId) {
                 try {
-                    const host = window.location.hostname || 'localhost';
-                    const backendUrl = 'http://' + host + ':3000';
+                    const backendUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:3000' : window.location.origin;
                     const response = await fetch(backendUrl + '/api/user/' + userId);
                     const result = await response.json();
                     if(result.success && result.data) {
@@ -538,8 +537,7 @@
 
         // When SOS/Report Accident is clicked, also alert the dashboard in real-time
         sosTrigger.addEventListener('click', () => {
-            const host = window.location.hostname || 'localhost';
-            const backendUrl = 'http://' + host + ':3000';
+            const backendUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:3000' : window.location.origin;
             fetch(backendUrl + '/api/send-alert', { 
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
